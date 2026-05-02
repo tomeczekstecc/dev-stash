@@ -2,6 +2,15 @@
 
 Developer knowledge base hub for snippets, commansds, notes, files, images, links and custom types, build with Next.js 16, React 19, Tailwind CSS 4 and TypeScript 5. See AGENTS.md for agent integration details.
 
+## Context Files
+
+Read the following to get the full context of the project:
+
+- @context/project-obverview.md
+- @context/coding-standards.md
+- @context/ai-interaction.md
+- @context/current-feature.md
+
 ## Commands
 
 ```bash
