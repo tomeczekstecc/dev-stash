@@ -35,3 +35,8 @@ public/           # Static assets (currently empty)
 ```
 
 All new pages go under `src/app/`. When adding a page, update this file's project structure section per the global CLAUDE.md instruction.
+
+<!-- SPECKIT START -->
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan
+<!-- SPECKIT END -->
