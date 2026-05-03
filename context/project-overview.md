@@ -328,6 +328,14 @@ git switch -c lesson-01-setup
 
 ---
 
+### Design references
+- [Notion](https://www.notion.so/)
+- [Linear](https://linear.app/)
+- [Raycast](https://www.raycast.com/)
+
+### Screenshots:
+Referto screnshots folder @context/screenshots for dashbord UI. Doesntr to be exact, use as reference for design direction and layout.
+
 ## 📌 Status
 
 - In planning
