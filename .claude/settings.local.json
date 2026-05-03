@@ -5,7 +5,10 @@
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
       "Bash(git push *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(Get-ChildItem c:\\\\dev\\\\traversy-ai\\\\dev-stash\\\\src -Recurse)",
+      "Read(//mnt/c/dev/traversy-ai/**)",
+      "Bash(pnpm tsc *)"
     ]
   }
 }
