@@ -30,8 +30,20 @@ pnpm lint      # run ESLint
 ## Project structure
 
 ```
-src/app/          # App Router root — layout.tsx + page.tsx only so far
-public/           # Static assets (currently empty)
+src/app/                    # App Router root
+  layout.tsx                # Root layout — dark mode, Geist fonts
+  page.tsx                  # Home page
+  dashboard/
+    page.tsx                # Dashboard page (/dashboard)
+src/components/
+  icons.tsx                 # Centralized Lucide icon re-exports — import from here, not lucide-react
+  ui/                       # shadcn/ui components (button, input)
+  dashboard/
+    top-bar.tsx             # Dashboard top bar
+src/lib/
+  utils.ts                  # shadcn cn() utility
+  mock-data.ts              # Mock data for development
+public/                     # Static assets
 ```
 
 All new pages go under `src/app/`. When adding a page, update this file's project structure section per the global CLAUDE.md instruction.
@@ -39,4 +51,5 @@ All new pages go under `src/app/`. When adding a page, update this file's projec
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
+at specs/001-dashboard-phase-1/plan.md
 <!-- SPECKIT END -->
