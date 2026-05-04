@@ -1,12 +1,21 @@
-import { Search, Plus, FolderPlus } from "@/components/icons";
+import { Search, Plus, FolderPlus, Menu } from "@/components/icons";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export function TopBar() {
+export function TopBar({ onOpenSidebar }: { onOpenSidebar: () => void }) {
   return (
     <header className="flex items-center gap-4 border-b border-border bg-background px-6 py-3">
       <div className="flex shrink-0 items-center gap-2">
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          className="md:hidden"
+          onClick={onOpenSidebar}
+          aria-label="Open sidebar"
+        >
+          <Menu className="h-5 w-5" />
+        </Button>
         <Avatar className="h-8 w-8">
           <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">
             DS

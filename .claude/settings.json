@@ -15,7 +15,19 @@
       "Bash(bash .specify/scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks)",
       "Bash(pnpm dlx *)",
       "Bash(pnpm build *)",
-      "Bash(bash .specify/scripts/bash/check-prerequisites.sh --json --paths-only)"
+      "Bash(bash .specify/scripts/bash/check-prerequisites.sh --json --paths-only)",
+      "Bash(git checkout *)",
+      "Bash(git merge *)",
+      "Bash(git stash *)",
+      "Bash(git branch *)",
+      "Edit(/.claude/skills/speckit-git-commit/**)",
+      "Bash(bash .specify/extensions/git/scripts/bash/create-new-feature.sh --json --short-name \"dashboard-phase-2\" \"Dashboard UI Phase 2 sidebar navigation\")",
+      "WebSearch",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Edit(/.claude/skills/grill-me/**)"
+    ],
+    "additionalDirectories": [
+      "c:\\dev\\traversy-ai\\dev-stash\\.claude\\skills"
     ]
   }
 }
