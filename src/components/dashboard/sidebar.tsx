@@ -5,22 +5,25 @@ import { usePathname } from "next/navigation";
 import { useState, type ComponentType, type SVGProps } from "react";
 
 import {
+  ChevronRight,
   Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
   FileText,
   Image,
   Link as LinkIcon,
-  Star,
-  Settings,
   PanelLeft,
+  Settings,
+  Sparkles,
+  Star,
+  StickyNote,
+  Terminal,
   X,
 } from "@/components/icons";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { type SidebarCollection } from "@/lib/db/collections";
+import { type ItemTypeWithCount } from "@/lib/db/items";
+import { mockUser } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
-import { collections, getTypeCounts, itemTypes, mockUser } from "@/lib/mock-data";
 
 type LucideIcon = ComponentType<SVGProps<SVGSVGElement>>;
 
@@ -48,15 +51,18 @@ function SidebarContent({
   onToggleCollapse,
   onCloseMobile,
   isMobile = false,
+  itemTypes,
+  collections,
 }: {
   isCollapsed: boolean;
   onToggleCollapse: () => void;
   onCloseMobile?: () => void;
   isMobile?: boolean;
+  itemTypes: ItemTypeWithCount[];
+  collections: SidebarCollection[];
 }) {
-  const typeCounts = getTypeCounts();
-  const favorites = collections.filter((collection) => collection.isFavorite);
-  const otherCollections = collections.filter((collection) => !collection.isFavorite);
+  const favorites = collections.filter((c) => c.isFavorite);
+  const others = collections.filter((c) => !c.isFavorite);
   const initials = getInitials(mockUser.name);
   const pathname = usePathname();
 
@@ -93,7 +99,7 @@ function SidebarContent({
           </div>
           <div className="space-y-1">
             {itemTypes.map((type) => {
-              const Icon = ICON_MAP[type.icon] ?? FileText;
+              const Icon = ICON_MAP[type.icon ?? ""] ?? FileText;
               const href = `/items/${type.slug}`;
               const isActive = pathname === href;
               const label = `${type.name}${type.name.endsWith("s") ? "" : "s"}`;
@@ -113,6 +119,7 @@ function SidebarContent({
                       "h-4 w-4 shrink-0 text-muted-foreground",
                       isActive && "text-foreground",
                     )}
+                    style={{ color: type.color ?? undefined }}
                   />
                   <span className={cn("truncate", !isMobile && isCollapsed && "hidden")}>
                     {label}
@@ -123,7 +130,7 @@ function SidebarContent({
                       !isMobile && isCollapsed && "hidden",
                     )}
                   >
-                    {typeCounts[type.id] ?? 0}
+                    {type.count}
                   </span>
                 </Link>
               );
@@ -132,57 +139,63 @@ function SidebarContent({
         </section>
 
         <section className={cn("space-y-3", !isMobile && isCollapsed && "hidden")}>
-          <div
-            className="px-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground"
-          >
+          <div className="px-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
             Collections
           </div>
 
-          <div className="space-y-1">
-            <div
-              className="px-2 text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground"
-            >
-              Favorites
+          {favorites.length > 0 && (
+            <div className="space-y-1">
+              <div className="px-2 text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
+                Favorites
+              </div>
+              {favorites.map((collection) => (
+                <Link
+                  key={collection.id}
+                  href={`/collections/${collection.id}`}
+                  className="flex items-center gap-3 rounded-lg px-2 py-2 text-sm text-foreground transition-colors hover:bg-muted"
+                >
+                  <Star className="h-4 w-4 shrink-0 fill-current text-amber-500" />
+                  <span className="truncate">{collection.name}</span>
+                </Link>
+              ))}
             </div>
-            {favorites.map((collection) => (
-              <Link
-                key={collection.id}
-                href={`/collections/${collection.id}`}
-                className={cn(
-                  "flex items-center rounded-lg px-2 py-2 text-sm text-foreground transition-colors hover:bg-muted",
-                  !isMobile && isCollapsed ? "justify-center" : "gap-3",
-                )}
-              >
-                <Star className="h-4 w-4 shrink-0 fill-current text-amber-500" />
-                <span className={cn("truncate", !isMobile && isCollapsed && "hidden")}>
-                  {collection.name}
-                </span>
-              </Link>
-            ))}
-          </div>
+          )}
 
-          <div className="space-y-1">
-            <div
-              className="px-2 text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground"
-            >
-              All Collections
+          {others.length > 0 && (
+            <div className="space-y-1">
+              <div className="px-2 text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
+                All Collections
+              </div>
+              {others.map((collection) => (
+                <Link
+                  key={collection.id}
+                  href={`/collections/${collection.id}`}
+                  className="flex items-center gap-3 rounded-lg px-2 py-2 text-sm text-foreground transition-colors hover:bg-muted"
+                >
+                  <span
+                    className={cn(
+                      "h-2 w-2 shrink-0 rounded-full",
+                      !collection.dominantTypeColor && "bg-border",
+                    )}
+                    style={
+                      collection.dominantTypeColor
+                        ? { backgroundColor: collection.dominantTypeColor }
+                        : undefined
+                    }
+                  />
+                  <span className="truncate">{collection.name}</span>
+                </Link>
+              ))}
             </div>
-            {otherCollections.map((collection) => (
-              <Link
-                key={collection.id}
-                href={`/collections/${collection.id}`}
-                className={cn(
-                  "flex items-center rounded-lg px-2 py-2 text-sm text-foreground transition-colors hover:bg-muted",
-                  !isMobile && isCollapsed ? "justify-center" : "gap-3",
-                )}
-              >
-                <span className="h-2 w-2 shrink-0 rounded-full bg-border" />
-                <span className={cn("truncate", !isMobile && isCollapsed && "hidden")}>
-                  {collection.name}
-                </span>
-              </Link>
-            ))}
-          </div>
+          )}
+
+          <Link
+            href="/collections"
+            className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
+          >
+            View all collections
+            <ChevronRight className="h-3 w-3" />
+          </Link>
         </section>
       </nav>
 
@@ -218,13 +231,14 @@ function SidebarContent({
   );
 }
 
-export function Sidebar({
-  isOpen,
-  onClose,
-}: {
+interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
-}) {
+  itemTypes: ItemTypeWithCount[];
+  collections: SidebarCollection[];
+}
+
+export function Sidebar({ isOpen, onClose, itemTypes, collections }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
@@ -237,7 +251,9 @@ export function Sidebar({
       >
         <SidebarContent
           isCollapsed={isCollapsed}
-          onToggleCollapse={() => setIsCollapsed((value) => !value)}
+          onToggleCollapse={() => setIsCollapsed((v) => !v)}
+          itemTypes={itemTypes}
+          collections={collections}
         />
       </aside>
 
@@ -248,6 +264,8 @@ export function Sidebar({
             isMobile
             onToggleCollapse={() => undefined}
             onCloseMobile={onClose}
+            itemTypes={itemTypes}
+            collections={collections}
           />
         </SheetContent>
       </Sheet>

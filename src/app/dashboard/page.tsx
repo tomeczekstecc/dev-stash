@@ -1,23 +1,17 @@
-"use client";
-
-import { useState } from "react";
-
+import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { DashboardMain } from "@/components/dashboard/main-content";
-import { Sidebar } from "@/components/dashboard/sidebar";
-import { TopBar } from "@/components/dashboard/top-bar";
+import { getSidebarCollections } from "@/lib/db/collections";
+import { getSystemItemTypes } from "@/lib/db/items";
 
-export default function DashboardPage() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+export default async function DashboardPage() {
+  const [itemTypes, sidebarCollections] = await Promise.all([
+    getSystemItemTypes(),
+    getSidebarCollections(),
+  ]);
 
   return (
-    <div className="flex h-screen flex-col">
-      <TopBar onOpenSidebar={() => setIsSidebarOpen(true)} />
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-        <main className="flex-1 overflow-hidden">
-          <DashboardMain />
-        </main>
-      </div>
-    </div>
+    <DashboardLayout itemTypes={itemTypes} sidebarCollections={sidebarCollections}>
+      <DashboardMain />
+    </DashboardLayout>
   );
 }

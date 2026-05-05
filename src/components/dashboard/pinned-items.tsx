@@ -11,14 +11,7 @@ import {
   StickyNote,
   Terminal,
 } from "@/components/icons";
-import {
-  type Item,
-  type ItemType,
-  type Tag,
-  getItemType,
-  getPinnedItems,
-  getTagsForItem,
-} from "@/lib/mock-data";
+import { type PinnedItemSummary } from "@/lib/db/items";
 
 type LucideIcon = ComponentType<SVGProps<SVGSVGElement>>;
 
@@ -32,23 +25,19 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Link,
 };
 
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+function formatDate(date: Date): string {
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
-interface PinnedItemCardProps {
-  item: Item;
-  type: ItemType;
-  tags: Tag[];
-}
+function PinnedItemCard({ item }: { item: PinnedItemSummary }) {
+  const { type, tags } = item;
+  const Icon = ICON_MAP[type.icon ?? ""] ?? FileText;
 
-function PinnedItemCard({ item, type, tags }: PinnedItemCardProps) {
-  const Icon = ICON_MAP[type.icon] ?? FileText;
   return (
     <div className="flex items-start gap-4 rounded-xl border border-border bg-card p-4 transition-colors hover:bg-muted/50">
       <div
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border"
-        style={{ color: type.color }}
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border"
+        style={{ color: type.color ?? undefined, borderColor: type.color ?? undefined }}
       >
         <Icon className="h-4 w-4" />
       </div>
@@ -82,8 +71,12 @@ function PinnedItemCard({ item, type, tags }: PinnedItemCardProps) {
   );
 }
 
-export function PinnedItems() {
-  const pinnedItems = getPinnedItems();
+interface PinnedItemsProps {
+  items: PinnedItemSummary[];
+}
+
+export function PinnedItems({ items }: PinnedItemsProps) {
+  if (items.length === 0) return null;
 
   return (
     <section className="space-y-4">
@@ -91,18 +84,11 @@ export function PinnedItems() {
         <Pin className="h-4 w-4 text-muted-foreground" />
         <h2 className="text-base font-semibold text-foreground">Pinned</h2>
       </div>
-      {pinnedItems.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No pinned items yet.</p>
-      ) : (
-        <div className="space-y-3">
-          {pinnedItems.map((item) => {
-            const type = getItemType(item.typeId);
-            if (!type) return null;
-            const tags = getTagsForItem(item);
-            return <PinnedItemCard key={item.id} item={item} type={type} tags={tags} />;
-          })}
-        </div>
-      )}
+      <div className="space-y-3">
+        {items.map((item) => (
+          <PinnedItemCard key={item.id} item={item} />
+        ))}
+      </div>
     </section>
   );
 }

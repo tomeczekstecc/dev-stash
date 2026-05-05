@@ -1,7 +1,7 @@
 import { type ComponentType, type SVGProps } from "react";
 
 import { FolderOpen, Layers, Star } from "@/components/icons";
-import { collections, items } from "@/lib/mock-data";
+import { getDashboardStats } from "@/lib/db/stats";
 
 type LucideIcon = ComponentType<SVGProps<SVGSVGElement>>;
 
@@ -23,11 +23,9 @@ function StatCard({ label, value, Icon }: StatCardProps) {
   );
 }
 
-export function StatsCards() {
-  const totalItems = items.length;
-  const totalCollections = collections.length;
-  const favoriteItems = items.filter((item) => item.isFavorite).length;
-  const favoriteCollections = collections.filter((col) => col.isFavorite).length;
+export async function StatsCards() {
+  const { totalItems, totalCollections, favoriteItems, favoriteCollections } =
+    await getDashboardStats();
 
   return (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-4">

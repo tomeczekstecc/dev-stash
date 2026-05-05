@@ -10,7 +10,7 @@ import {
   StickyNote,
   Terminal,
 } from "@/components/icons";
-import { type Item, type ItemType, getItemType, items } from "@/lib/mock-data";
+import { type RecentItemSummary } from "@/lib/db/items";
 
 type LucideIcon = ComponentType<SVGProps<SVGSVGElement>>;
 
@@ -24,22 +24,19 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Link,
 };
 
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+function formatDate(date: Date): string {
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
-interface RecentItemRowProps {
-  item: Item;
-  type: ItemType;
-}
+function RecentItemRow({ item }: { item: RecentItemSummary }) {
+  const { type } = item;
+  const Icon = ICON_MAP[type.icon ?? ""] ?? FileText;
 
-function RecentItemRow({ item, type }: RecentItemRowProps) {
-  const Icon = ICON_MAP[type.icon] ?? FileText;
   return (
     <div className="flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-muted/50">
       <div
         className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md"
-        style={{ color: type.color }}
+        style={{ color: type.color ?? undefined }}
       >
         <Icon className="h-3.5 w-3.5" />
       </div>
@@ -54,10 +51,12 @@ function RecentItemRow({ item, type }: RecentItemRowProps) {
   );
 }
 
-export function RecentItems() {
-  const recentItems = [...items]
-    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
-    .slice(0, 10);
+interface RecentItemsProps {
+  items: RecentItemSummary[];
+}
+
+export function RecentItems({ items }: RecentItemsProps) {
+  if (items.length === 0) return null;
 
   return (
     <section className="space-y-2">
@@ -66,11 +65,9 @@ export function RecentItems() {
         <h2 className="text-base font-semibold text-foreground">Recent</h2>
       </div>
       <div className="rounded-xl border border-border bg-card">
-        {recentItems.map((item) => {
-          const type = getItemType(item.typeId);
-          if (!type) return null;
-          return <RecentItemRow key={item.id} item={item} type={type} />;
-        })}
+        {items.map((item) => (
+          <RecentItemRow key={item.id} item={item} />
+        ))}
       </div>
     </section>
   );
