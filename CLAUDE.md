@@ -44,6 +44,14 @@ src/components/
 src/lib/
   utils.ts                  # shadcn cn() utility
   mock-data.ts              # Mock data for development
+  db.ts                     # Prisma singleton (PrismaPg adapter, hot-reload safe)
+src/generated/
+  prisma/                   # Generated Prisma client — do not edit, gitignored
+prisma/
+  schema.prisma             # Database schema — all models + enums
+  seed.ts                   # Seeds 7 system ItemTypes
+  migrations/               # Migration history — committed to source control
+prisma.config.ts            # Prisma 7 CLI config — schema path, seed, DIRECT_URL
 public/                     # Static assets
 ```
 
