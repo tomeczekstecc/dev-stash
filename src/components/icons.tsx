@@ -14,4 +14,9 @@ export {
   PanelLeft,
   X,
   Menu,
+  Pin,
+  ChevronRight,
+  Clock,
+  Layers,
+  FolderOpen,
 } from "lucide-react";
